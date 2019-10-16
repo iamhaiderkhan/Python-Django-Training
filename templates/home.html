@@ -3,7 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<ul class="nav">
+<ul class="nav navbar navbar-expand-lg navbar-light bg-light">
     {% if user.is_authenticated %}
      <li class="nav-item">
             <a class="nav-link active" href="{% url 'logout' %}">Logout</a>
@@ -26,7 +26,11 @@
 
 </ul>
 {% if user.is_authenticated %}
-<h1>Hi {{ user.username }}!</h1>
+<div class="container text-center">
+
+    <h1 class="mt-5">Hi {{user.username }}!</h1>
+</div>
+
 {% endif %}
 
 
