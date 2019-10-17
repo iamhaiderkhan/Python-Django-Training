@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+
+
+
+
+{% block content %}
+
+{% include 'home.html' %}
+<!--    <form method="post">-->
+<!--  {% csrf_token %}-->
+<!--  {{ form.as_p }}-->
+<!--  <button type="submit">Login</button>-->
+<!--</form>-->
+
+<div class="container">
+    <div class="col-md-4 m-auto">
+        <div class="text-center">
+            <h1 class="mt-5 mb-4 ">Login</h1>
+        </div>
+
+      <form class="mb-2"  method="post">
+     {% csrf_token %}
+        <table>
+              {{form.as_table}}
+        </table>
+
+        <button class="btn btn-success btn-block mt-2 " type="submit">Login</button>
+
+    </div>
+
+</form>
+</div>
+
+
+{% endblock content %}
