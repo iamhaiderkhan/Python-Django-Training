@@ -52,7 +52,6 @@ class ProfileUpdateView(View):
         form_data['form'] = UpdateProfileForm(pre_user_data)
         return render(request, 'registration/profile-update.html', form_data)
 
-
     def post(self, request):
         data = {}
         update_user_form = UpdateProfileForm(request.POST, instance=request.user)
