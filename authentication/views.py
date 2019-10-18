@@ -3,7 +3,7 @@ from django.views import View
 from .forms import SignUpForm, UpdateProfileForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-# from django.db.utils import IntegrityError
+
 from django.db.utils import IntegrityError
 
 # Create your views here.
@@ -33,12 +33,13 @@ class SignUpView(View):
             }
             try:
                 User.objects.create_user(new_user_data['username'], new_user_data['email'], new_user_data['password'])
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/auth/login/')
             except IntegrityError as e:
                 return render(request, 'registration/signup.html', {'form': form, 'error': str(e).split('"')[1]})
 
 
 class ProfileUpdateView(View):
+
     def get(self, request):
         form_data = {}
         pre_user_data = {
@@ -51,6 +52,7 @@ class ProfileUpdateView(View):
         form_data['form'] = UpdateProfileForm(pre_user_data)
         return render(request, 'registration/profile-update.html', form_data)
 
+
     def post(self, request):
         data = {}
         update_user_form = UpdateProfileForm(request.POST, instance=request.user)
@@ -62,20 +64,3 @@ class ProfileUpdateView(View):
                 data['form'] = update_user_form
                 data['error'] = e
                 return render(request, 'registration/profile-update.html', data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

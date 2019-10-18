@@ -4,6 +4,7 @@
 
 {% block content %}
 <ul class="nav navbar navbar-expand-lg navbar-light bg-light">
+
     {% if user.is_authenticated %}
      <li class="nav-item">
             <a class="nav-link active" href="{% url 'logout' %}">Logout</a>
@@ -24,6 +25,7 @@
         </li>
     {% endif %}
     {% endif %}
+
 
 
 
