@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %}Profile{% endblock %}
 
 {% block content %}
@@ -7,24 +7,21 @@
 <div class="container">
     <div class="col-md-4 m-auto ">
         <div class="text-center">
-              <h1 class="mt-5 mb-4">Profile</h1>
+            <h1 class="mt-5 mb-4">Profile</h1>
         </div>
+        <form class="mb-2"  method="post">
+            {% csrf_token %}
+            <table>
+                {{form | crispy}}
+            </table>
 
-      <form class="mb-2"  method="post">
-     {% csrf_token %}
-        <table>
-              {{form.as_table}}
-        </table>
-
-        <button class="btn btn-success btn-block mt-2 " type="submit">Update</button>
-        {% if error %}
-          <div class="alert alert-danger mt-2" role="alert">
- {{error}}
-</div>
-          {% endif %}
-
+            <button class="btn btn-success btn-block mt-2 " type="submit">Update</button>
+            {% if error %}
+            <div class="alert alert-danger mt-2" role="alert">
+                {{error}}
+            </div>
+            {% endif %}
     </div>
-
-</form>
+    </form>
 </div>
 {% endblock content %}

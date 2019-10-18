@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 
 
 class SignUpForm(forms.ModelForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput, min_length=8)
 
     class Meta:
         model = User

@@ -21,21 +21,25 @@ class SignUpView(View):
         return render(request, 'registration/signup.html', {'form': form})
 
     def post(self, request):
+
         form = SignUpForm(request.POST)
+        print(form.is_valid())
         if form.is_valid():
+
             form_data = form.clean()
             new_user_data = {
-                'username': form_data.get('username'),
-                'email': form_data.get('email'),
-                'password': form_data.get('password'),
-                'first_name': form_data.get('first_name'),
-                'last_name': form_data.get('last_name')
+                    'username': form_data.get('username'),
+                    'email': form_data.get('email'),
+                    'password': form_data.get('password')
             }
             try:
                 User.objects.create_user(new_user_data['username'], new_user_data['email'], new_user_data['password'])
                 return HttpResponseRedirect('/auth/login/')
             except IntegrityError as e:
                 return render(request, 'registration/signup.html', {'form': form, 'error': str(e).split('"')[1]})
+        else:
+            form = SignUpForm(request.POST)
+            return render(request, 'registration/signup.html', {'form': form})
 
 
 class ProfileUpdateView(View):
