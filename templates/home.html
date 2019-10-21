@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_tags %}
 {% block title %}Home{% endblock %}
 
 {% block content %}
@@ -29,7 +29,7 @@
 </ul>
 {% if user.is_authenticated %}
 <div class="container text-center">
-    <h1 class="mt-5">Hi {{user.username }}!</h1>
+    <h1 class="mt-5">Hi {{user.username | upper}}!</h1>
 </div>
 {% endif %}
 {% endblock content %}
