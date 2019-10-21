@@ -1,7 +1,8 @@
 from django import forms
 from django.core.validators import validate_email
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from .exception import DuplicateEmailError
+from django.contrib.auth.hashers import make_password
 
 
 class SignUpForm(forms.ModelForm):
@@ -14,12 +15,18 @@ class SignUpForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'username', 'email', 'password')
 
-    def email_clean(self, new_email):
-        try:
-            email = User.objects.filter(email=new_email).count()
-            return email
-        except ObjectDoesNotExist:
-            pass
+    def email_clean(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).exists():
+            raise DuplicateEmailError()
+        return email
+
+    def save(self):
+        user = super(SignUpForm, self).save(commit=False)
+        user.password = make_password(self.cleaned_data.get('password'))
+        user.save()
+        return user
 
 
 class LoginForm(forms.ModelForm):
@@ -35,19 +42,14 @@ class UpdateProfileForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'username', 'email')
 
-    def email_clean(self, new_email, user_id):
-        try:
-            email = User.objects.filter(email=new_email).exclude(id=user_id).count()
-            return email
-        except ObjectDoesNotExist:
-            pass
+    def email_clean(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).exists():
+            raise DuplicateEmailError()
+        return email
 
-
-
-
-
-
-
-
-
-
+    def save(self):
+        user = super(UpdateProfileForm, self).save(commit=False)
+        user.save()
+        return user

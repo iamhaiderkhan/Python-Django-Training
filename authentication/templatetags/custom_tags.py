@@ -4,5 +4,5 @@ register = template.Library()
 
 
 @register.filter
-def upper(value):
+def upper_value(value):
     return value.upper()
