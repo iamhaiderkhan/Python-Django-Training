@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 
 from django.db.utils import IntegrityError
-
+from .exception import DuplicateEmailError
 # Create your views here.
 
 
@@ -27,16 +27,33 @@ class SignUpView(View):
         if form.is_valid():
 
             form_data = form.clean()
+
             new_user_data = {
                     'username': form_data.get('username'),
                     'email': form_data.get('email'),
                     'password': form_data.get('password')
             }
+
+            user_other_fields = {
+                'first_name': form_data.get('first_name'),
+                'last_name': form_data.get('last_name'),
+            }
             try:
-                User.objects.create_user(new_user_data['username'], new_user_data['email'], new_user_data['password'])
+                email = form.email_clean(form_data.get('email'))
+                if email:
+                    raise DuplicateEmailError("Email already exist, please try another email")
+
+                User.objects.create_user(
+                    new_user_data['username'],
+                    new_user_data['email'],
+                    new_user_data['password'],
+                    **user_other_fields)
+
                 return HttpResponseRedirect('/auth/login/')
             except IntegrityError as e:
                 return render(request, 'registration/signup.html', {'form': form, 'error': str(e).split('"')[1]})
+            except DuplicateEmailError as e:
+                return render(request, 'registration/signup.html', {'form': form, 'error': e})
         else:
             form = SignUpForm(request.POST)
             return render(request, 'registration/signup.html', {'form': form})
@@ -61,9 +78,18 @@ class ProfileUpdateView(View):
         update_user_form = UpdateProfileForm(request.POST, instance=request.user)
         if update_user_form.is_valid():
             try:
+
+                email = update_user_form.email_clean(update_user_form.cleaned_data.get('email'), request.user.id)
+                if email:
+                    raise DuplicateEmailError("Email already exist, please try another email")
+
                 update_user_form.save()
                 return HttpResponseRedirect('/')
-            except Exception as e:
+            except IntegrityError as e:
+                data['form'] = update_user_form
+                data['error'] = e
+                return render(request, 'registration/profile-update.html', data)
+            except DuplicateEmailError as e:
                 data['form'] = update_user_form
                 data['error'] = e
                 return render(request, 'registration/profile-update.html', data)
