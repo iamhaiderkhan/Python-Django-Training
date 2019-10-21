@@ -21,11 +21,6 @@ class SignUpForm(forms.ModelForm):
             pass
 
 
-
-
-
-
-
 class LoginForm(forms.ModelForm):
 
     class Meta:
