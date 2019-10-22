@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.models import User
-from .exception import DuplicateEmailError
 
 
 class EmailDuplicationMixin(forms.ModelForm):

@@ -33,8 +33,3 @@ class UpdateProfileForm(EmailDuplicationMixin, forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'username', 'email')
-
-    def save(self):
-        user = super(UpdateProfileForm, self).save(commit=False)
-        user.save()
-        return user
